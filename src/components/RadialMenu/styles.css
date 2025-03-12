@@ -1,0 +1,34 @@
+/* Estilos específicos para el menú radial - manteniendo el tamaño original de la letra */
+
+/* Añadir sombras sutiles para mejor legibilidad */
+#radial-menu text {
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Colores para textos en hover y seleccionados */
+#radial-menu text:hover,
+#radial-menu g[data-selected="true"] text {
+  fill: white;
+}
+
+/* Estilos específicos para móviles */
+@media (max-width: 768px) {
+  #radial-menu text {
+    font-size: 6px !important;
+  }
+  
+  #radial-menu textPath {
+    letter-spacing: 0.5px !important;
+  }
+  
+  /* Reducir el tamaño de todos los elementos del menú radial en móvil */
+  #radial-menu {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Eliminar efectos complejos en móviles */
+  #radial-menu .motion-safe-transform {
+    filter: none !important;
+  }
+}

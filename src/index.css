@@ -1,0 +1,263 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #8b5cf6;
+  --primary-dark: #7c3aed;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  overscroll-behavior: none; /* Previene rebotes en móviles */
+  /* position: fixed; */
+  /* overflow: hidden; */
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation; /* Mejora el rendimiento táctil y elimina el delay de 300ms */
+  -webkit-tap-highlight-color: transparent; /* Elimina el highlight al tocar */
+  -webkit-overflow-scrolling: touch; /* Permite scroll suave en iOS */
+}
+
+/* Estilo específico para menú radial */
+#menu-radial-container {
+  transform: translate(0%, 0%) scale(1);
+  transform-origin: bottom right;
+  pointer-events: all !important;
+  touch-action: auto;
+  right: 10px !important;
+  bottom: 10px !important;
+  position: fixed !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: flex-end !important;
+  width: 400px !important;
+  height: 400px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 9999 !important;
+}
+
+/* Estilos específicos para móviles */
+@media (max-width: 768px) {
+  /* SOLUCIÓN RADICAL: Eliminar COMPLETAMENTE del flujo el menú radial en móviles */
+  #menu-radial-container {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    position: fixed !important;
+    z-index: -9999 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+  }
+
+  /* Esto garantiza que no haya absolutamente ninguna parte del menú radial visible */
+  #radial-menu,
+  .radial-menu-non-demo,
+  #menu-radial-container * {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+}
+
+.radial-menu-non-demo {
+  position: absolute !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  width: 400px !important;
+  height: 400px !important;
+}
+
+@media (max-width: 768px) {
+  .radial-menu-non-demo {
+    width: 220px !important;
+    height: 220px !important;
+  }
+}
+
+.marker-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(17, 24, 39, 0.85);
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.marker-content:hover {
+  transform: scale(1.05);
+  border-color: white;
+  background: rgba(17, 24, 39, 0.95);
+}
+
+.glass-panel {
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Soporte para Safari */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-item-hover {
+  transition: all 0.3s ease;
+}
+
+.menu-item-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustes para pantallas móviles */
+@media (max-width: 768px) {
+  .marker-content {
+    width: 32px;
+    height: 32px;
+    border-width: 1.5px;
+  }
+
+  /* Mejoras de rendimiento para móviles */
+  body {
+    will-change: auto; /* Limitar will-change para mejor rendimiento */
+    touch-action: manipulation; /* Mejorar la respuesta táctil */
+  }
+
+  /* Reducir transparencias y efectos para mejor rendimiento */
+  .glass-panel {
+    backdrop-filter: none !important; /* Eliminar backdrop-filter en móviles */
+    background: rgba(0, 0, 0, 0.95) !important; /* Fondo casi sólido */
+    box-shadow: none !important; /* Eliminar sombras complejas */
+  }
+
+  /* Optimizaciones extremas para móviles */
+  .mapboxgl-canvas {
+    image-rendering: optimizeSpeed !important; /* Priorizar velocidad sobre calidad */
+  }
+
+  /* Reducir animaciones y efectos en móvil */
+  .motion-safe-transform,
+  .menu-item-hover,
+  .marker-content,
+  .transition-all {
+    transition-duration: 0.15s !important; /* Animaciones ultra rápidas */
+    transform: translate3d(
+      0,
+      0,
+      0
+    ) !important; /* Forzar aceleración por hardware */
+    animation-duration: 0.15s !important; /* Animaciones ultra rápidas */
+    will-change: transform !important; /* Optimizar para transformaciones */
+  }
+
+  /* Reducir impacto de hover en móvil */
+  .menu-item-hover:hover {
+    transform: translateY(-1px) !important; /* Hover más sutil */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important; /* Sombra más ligera */
+  }
+}
+
+/* Botón fijo que aparece en la parte inferior para abrir el menú */
+.mobile-menu-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: flex;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Panel de menú móvil INDEPENDIENTE del menú radial */
+  .mobile-menu-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 5px 20px 20px 20px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: -90vh;
+    z-index: 9998;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    transition: bottom 0.3s ease;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  /* Barra superior con el manejador para arrastrar */
+  .mobile-menu-handle {
+    width: 40px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+    margin: 0 auto 15px auto;
+  }
+
+  /* Secciones del menú móvil */
+  .mobile-menu-section {
+    margin-bottom: 15px;
+  }
+
+  .mobile-menu-section h3 {
+    font-size: 14px;
+    margin: 0 0 8px 0;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Lista horizontal de opciones */
+  .mobile-menu-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mobile-menu-option {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: white;
+    transition: background 0.2s;
+  }
+
+  .mobile-menu-option.active {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Optimización de elementos animados */
+.motion-safe-transform {
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reducir transparencias en móviles para mejorar rendimiento */
+.glass-panel {
+  background: rgba(0, 0, 0, 0.85);
+}
