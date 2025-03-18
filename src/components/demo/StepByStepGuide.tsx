@@ -110,10 +110,10 @@ const StepByStepGuide: React.FC<StepByStepGuideProps> = ({
       transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
       className="absolute right-8 top-1/2 transform -translate-y-1/2 max-w-sm w-full z-[9999]"
     >
-      <div className="bg-black/80 backdrop-blur-md rounded-xl overflow-hidden shadow-2xl border border-white/15">
+      <div className="bg-black/40 backdrop-blur-xl rounded-xl overflow-hidden shadow-2xl border border-white/5">
         <div className="relative">
           {/* Header con título */}
-          <div className="px-5 py-4 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-gray-500/20 to-transparent">
+          <div className="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-gray-500/10 to-transparent">
             <div className="flex items-center gap-3">
               {currentGuide.icon}
               <h3 className="text-white font-bold text-lg">
@@ -139,7 +139,7 @@ const StepByStepGuide: React.FC<StepByStepGuideProps> = ({
           </div>
           
           {/* Footer con botones de navegación */}
-          <div className="px-5 py-4 border-t border-white/10 flex justify-between items-center">
+          <div className="px-5 py-4 border-t border-white/5 flex justify-between items-center bg-gradient-to-r from-transparent to-gray-700/5">
             {/* Indicadores de progreso */}
             <div className="flex gap-1">
               {guideSteps.map((_, index) => (
@@ -156,7 +156,7 @@ const StepByStepGuide: React.FC<StepByStepGuideProps> = ({
               {/* Botón para avanzar al siguiente paso */}
               <button
                 onClick={handleNextStep}
-                className="bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded flex items-center gap-1 transition-colors"
+                className="bg-black/25 hover:bg-black/35 text-white px-3 py-1.5 rounded flex items-center gap-1 transition-colors border border-white/5"
               >
                 Siguiente
                 <ChevronRight size={16} />
@@ -165,7 +165,7 @@ const StepByStepGuide: React.FC<StepByStepGuideProps> = ({
               {/* Botón saltar al mapa */}
               <button
                 onClick={onSkipDemo}
-                className="bg-gray-500 hover:bg-gray-600 text-white font-medium px-4 py-1.5 rounded flex items-center gap-2 transition-colors shadow-md"
+                className="bg-black/30 hover:bg-black/40 text-white font-medium px-4 py-1.5 rounded flex items-center gap-2 transition-colors shadow-md border border-white/5"
               >
                 <span>IR AL MAPA</span>
                 <ChevronRight size={16} />
