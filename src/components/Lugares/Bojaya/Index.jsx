@@ -22,12 +22,16 @@ import foto04 from "./assets/foto04.png";
 import foto05 from "./assets/foto05.png";
 import foto06 from "./assets/foto06.png";
 import { Link } from "react-router-dom";
+import { object } from "framer-motion/client";
 
 export default function index() {
   const [contrast, setContrast] = useState("normal");
   const styles = {
     fotos: {
       padding: 8,
+      width: "100%",
+      maxHeight: "300px",
+      objectFit: "cover",
     },
   };
   // BREACRUMB
@@ -476,7 +480,7 @@ export default function index() {
           style={{
             height: "100vh",
             margin: "0 40px",
-            backgroundColor: "#111828",
+            backgroundColor: "#000",
             padding: "64px 128px",
             display: "flex",
             flexDirection: "column",

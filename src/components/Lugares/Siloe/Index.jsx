@@ -28,6 +28,9 @@ export default function index() {
   const styles = {
     fotos: {
       padding: 8,
+      width: "100%",
+      maxHeight: "300px",
+      objectFit: "cover",
     },
   };
   // BREACRUMB
@@ -475,7 +478,7 @@ export default function index() {
           style={{
             height: "100vh",
             margin: "0 40px",
-            backgroundColor: "#111828",
+            backgroundColor: "#000",
             padding: "64px 128px",
             display: "flex",
             flexDirection: "column",
