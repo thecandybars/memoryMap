@@ -21,17 +21,13 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
   const [selectedMacro, setSelectedMacro] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   
-  // Efecto para inicializar y cargar el mapa con una vista cinematográfica
   useEffect(() => {
     if (mapRef?.current && mapLoadedRef?.current) {
       console.log("Iniciando secuencia de visualización para Colombia");
       
-      // Cargar las regiones con todas sus macroregiones
       loadRegionsGeoJSON(mapRef, mapLoadedRef);
       
       try {
-        // Asegurarnos que la capa de regiones tenga la propiedad de color correcta
-        // Esto garantiza que todas las macroregiones tengan sus colores correspondientes
         if (mapRef.current.getLayer('regiones-fill')) {
           mapRef.current.setPaintProperty('regiones-fill', 'fill-color', [
             'match',
@@ -41,15 +37,13 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
             'andina', '#D4A76A',
             'caribe', '#F9B45C',
             'orinoquia', '#D76D6D',
-            'rgba(255, 255, 255, 0.2)' // color por defecto
+            'rgba(255, 255, 255, 0.2)'
           ]);
         }
       } catch (error) {
         console.warn("Error al configurar colores de regiones:", error);
       }
       
-      // Secuencia de visualización cinematográfica
-      // Primero, vista amplia desde arriba
       mapRef.current.flyTo({
         center: [-73.5, 4.5],
         zoom: 4.8,
@@ -58,7 +52,6 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
         duration: 2000
       });
       
-      // Después de un breve momento, inclinar la cámara para una vista más interesante
       setTimeout(() => {
         if (mapRef?.current) {
           mapRef.current.flyTo({
@@ -73,7 +66,6 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
     }
   }, [mapRef, mapLoadedRef]);
 
-  // Función para manejar selecciones en el menú radial
   const handleMenuSelect = (type: string, id: string) => {
     console.log(`Selección: ${type} - ${id}`);
     
@@ -82,7 +74,6 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
         highlightRegion(mapRef, getRegionNameForGeoJSON(id));
         
         if (selectedMacro === id) {
-          // Si ya está seleccionada, deseleccionar
           setSelectedMacro(null);
           mapRef.current.flyTo({
             center: [-73.5, 4.5],
@@ -92,7 +83,6 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
             duration: 2000
           });
         } else {
-          // Seleccionar nueva región
           setSelectedMacro(id);
           const region = colombiaRegions[id];
           if (region && region.center) {
@@ -107,11 +97,9 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
         }
       }
     } else if (id === 'center' && onStartTour) {
-      // Iniciar el tour guiado
       onStartTour();
     }
     
-    // Actualizar la sección actual y el paso del tutorial
     switch (type) {
       case 'macro':
         setCurrentSection('department');
@@ -128,20 +116,14 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
     }
   };
 
-  // Función para ir directamente al mapa principal
   const goToMap = () => {
     console.log("IR AL MAPA: Función ejecutada");
     
     try {
-      // Primero, limpiar cualquier región seleccionada y resetear el estado local
       setSelectedMacro(null);
       
-      // Resetear el resaltado de regiones directamente aquí
       if (mapRef?.current && mapLoadedRef?.current) {
-        // Quitar resaltado de la región actual
         highlightRegion(mapRef, null);
-        
-        // Restablecer la vista del mapa
         mapRef.current.flyTo({
           center: [-73.5, 4.5],
           zoom: 5.2,
@@ -151,7 +133,6 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
         });
       }
       
-      // Mostrar animación de transición
       const transitionOverlay = document.createElement('div');
       transitionOverlay.id = 'map-transition-overlay';
       transitionOverlay.style.cssText = `
@@ -183,22 +164,16 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
       transitionOverlay.appendChild(loadingText);
       document.body.appendChild(transitionOverlay);
       
-      // Hacer visible el overlay con transición
       setTimeout(() => {
         transitionOverlay.style.opacity = '1';
       }, 10);
       
-      // Marcar demo como completado
       DemoStateManager.markDemoAsComplete();
       
-      // Verificar que onDemoComplete exista y sea una función
       if (typeof onDemoComplete === 'function') {
-        // Esperar un momento antes de ejecutar la transición
         setTimeout(() => {
           console.log("Ejecutando onDemoComplete");
           onDemoComplete();
-          
-          // Eliminar el overlay después de la transición
           setTimeout(() => {
             if (transitionOverlay) {
               transitionOverlay.style.opacity = '0';
@@ -217,50 +192,96 @@ const DemoMode: React.FC<DemoModeProps> = ({ onDemoComplete, onStartTour, mapRef
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center">
-      {/* Fondo semitransparente con blur para el modo demo */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-      
-      {/* Guía del Demo - Usando el nuevo componente DemoGuide */}
-      <DemoGuide 
-        currentSection={currentSection}
-        currentStep={currentStep}
-        onSkipDemo={goToMap}
-      />
-      
-      
-      {/* Contenedor principal con menú radial absolutamente centrado */}
-      <div className="absolute inset-0 flex items-center justify-center" style={{ transform: 'translateX(-420px) translateY(-80px)' }}>
-        <div style={{ width: '600px', height: '600px' }}>
-          <RadialMenu 
-            onSelect={handleMenuSelect}
-            onStartTour={onStartTour}
-            isDemoMode={true}
-            highlightSection={currentSection}
-            selectedMacro={selectedMacro}
-          />
-        </div>
+    <div className="fixed inset-0" style={{
+      backgroundColor: 'rgba(0, 0, 0, 0.25)',
+      backdropFilter: 'blur(3px)',
+      zIndex: 9000
+    }}>
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '600px',
+        height: '600px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <RadialMenu 
+          onSelect={handleMenuSelect}
+          onStartTour={onStartTour}
+          isDemoMode={true}
+          highlightSection={currentSection}
+          selectedMacro={selectedMacro}
+        />
       </div>
       
-      {/* Botón flotante moderno - ahora en la esquina inferior derecha */}
       <motion.div 
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className="fixed bottom-8 right-6 z-50"
+        style={{ 
+          position: 'absolute',
+          top: 'calc(50% - 60px)', 
+          transform: 'translateY(-50%)' 
+        }}
+        initial={{ x: 'calc(50% - 200px)' }}
+        animate={{ 
+          // Mover de forma paralela según la sección activa
+          x: currentSection === 'macro' ? 'calc(50% - 200px)' : 
+             currentSection === 'department' ? 'calc(50% - 205px)' : 
+             currentSection === 'memory' ? 'calc(50% - 210px)' : 
+             'calc(50% - 200px)'
+        }}
+        transition={{ 
+          duration: 0.5, 
+          type: 'spring', 
+          stiffness: 120, 
+          damping: 14 
+        }}
       >
-        <button 
-          onClick={goToMap}
-          className="px-6 py-3 rounded-full bg-black/40 backdrop-blur-md
-              hover:bg-black/50
-              shadow-[0_8px_20px_rgba(0,0,0,0.2)] flex items-center gap-3 group transition-all duration-300 
-              border border-white/10"
-        >
-          <span className="text-white font-medium">Ir al mapa</span>
-          <ChevronRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
-        </button>
+        <DemoGuide 
+          currentSection={currentSection}
+          currentStep={currentStep}
+          onSkipDemo={goToMap}
+        />
       </motion.div>
       
+      {/* Elementos de navegación inferior */}
+      <div className="fixed bottom-8 z-50 w-full flex justify-between">
+        {/* Texto informativo centrado con el menú radial */}
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="px-6 py-2 rounded-full bg-black/20 backdrop-blur-sm
+                shadow-[0_4px_12px_rgba(0,0,0,0.15)] border border-white/5"
+          >
+            <p className="text-white/90 font-medium text-sm">
+              Explora los lugares de memoria en cuatro pasos
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Botón flotante para ir al mapa (a la derecha) */}
+        <div className="ml-auto mr-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <button 
+              onClick={goToMap}
+              className="px-6 py-3 rounded-full bg-black/25 backdrop-blur-md
+                  hover:bg-black/35
+                  shadow-[0_8px_20px_rgba(0,0,0,0.2)] flex items-center gap-3 group transition-all duration-300 
+                  border border-white/5"
+            >
+              <span className="text-white font-medium">Ir al mapa</span>
+              <ChevronRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+            </button>
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 };

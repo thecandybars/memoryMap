@@ -12,7 +12,7 @@ body {
   overscroll-behavior: none; /* Previene rebotes en móviles */
   /* position: fixed; */
   /* overflow: hidden; */
-  width: 100%;
+  width: 101%;
   height: 100%;
   touch-action: manipulation; /* Mejora el rendimiento táctil y elimina el delay de 300ms */
   -webkit-tap-highlight-color: transparent; /* Elimina el highlight al tocar */

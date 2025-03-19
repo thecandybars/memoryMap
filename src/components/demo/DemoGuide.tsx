@@ -56,15 +56,15 @@ const DemoGuide: React.FC<DemoGuideProps> = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="absolute top-4 left-4 max-w-md z-50"
+          className="max-w-md z-50"
         >
-          <div className="bg-black/60 backdrop-blur-xl 
-            rounded-2xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.3)] overflow-hidden">
+          <div className="bg-black/40 backdrop-blur-xl 
+            rounded-2xl border border-white/5 shadow-[0_10px_40px_rgba(0,0,0,0.3)] overflow-hidden">
             {/* Cabecera */}
-            <div className="px-5 py-3 border-b border-white/10 flex justify-between items-center
-                bg-gradient-to-r from-gray-700/20 to-transparent">
+            <div className="px-5 py-3 border-b border-white/5 flex justify-between items-center
+                bg-gradient-to-r from-gray-700/10 to-transparent">
               <div className="flex items-center gap-3">
-                <div className="bg-gray-400/40 backdrop-blur-sm w-8 h-8 rounded-full 
+                <div className="bg-gray-400/30 backdrop-blur-sm w-8 h-8 rounded-full 
                   flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
                   <span className="font-bold text-white text-sm">{currentInfo.position}</span>
                 </div>
@@ -81,7 +81,7 @@ const DemoGuide: React.FC<DemoGuideProps> = ({
             {/* Contenido */}
             <div className="p-5">
               <div className="flex items-start gap-4">
-                <div className="mt-1 bg-gradient-to-br from-gray-500/10 to-transparent p-2 rounded-full">
+                <div className="mt-1 bg-gradient-to-br from-gray-500/5 to-transparent p-2 rounded-full">
                   {currentInfo.icon}
                 </div>
                 <p className="text-white/80 text-sm leading-relaxed">
@@ -114,7 +114,7 @@ const DemoGuide: React.FC<DemoGuideProps> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={() => setIsExpanded(true)}
-          className="absolute top-4 left-4 z-50 bg-gradient-to-br from-gray-400 to-gray-500 
+          className="z-50 bg-gradient-to-br from-gray-400 to-gray-500 
             hover:from-gray-500 hover:to-gray-600 p-3 rounded-full shadow-xl 
             transition-all duration-300 hover:scale-110"
           title="Mostrar guía"
