@@ -12,7 +12,7 @@ import {
 import React, { useState } from "react";
 import imagenPrincipal from "./assets/portada.png";
 import figuraMadera from "./assets/figuraMadera.png";
-import mapa from "./assets/mapaSiloe.png";
+import mapa from "./assets/mapa.png";
 import foto01 from "./assets/foto01.png";
 import foto02 from "./assets/foto02.png";
 import foto03 from "./assets/foto03.png";
