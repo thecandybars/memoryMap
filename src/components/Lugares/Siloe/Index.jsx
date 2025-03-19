@@ -11,7 +11,9 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import imagenPrincipal from "./assets/portada.png";
-import fotoBasicData from "./assets/fotoBasicData.jpeg";
+import historia from "./assets/historia.png";
+import historia2 from "./assets/historia2.png";
+import fotoBasicData from "./assets/fotoBasicData.png";
 import mapa from "./assets/mapa.png";
 import foto01 from "./assets/foto01.png";
 import foto02 from "./assets/foto02.png";
@@ -39,7 +41,7 @@ export default function index() {
         </span>
         <span className=" text-[13px] font-semibold">&gt;</span>
         <span className=" text-[13px] font-semibold text-orange px-1 rounded">
-          Casa de la Memoria del Pacífico Nariñense
+          Museo Popular de Siloé
         </span>
       </div>
       <Link
@@ -64,25 +66,27 @@ export default function index() {
       icon: <CalendarDays {...iconStyle} />,
       image: "/lugares/calendar.png",
       title: "Año de creación",
-      value: "2012",
+      value: "2020",
     },
     {
       icon: <School {...iconStyle} />,
       image: "/lugares/house.png",
       title: "Tipo de Lugar de Memoria",
-      value: "Casa",
+      value: "Museo / Galería",
     },
     {
       icon: <Globe {...iconStyle} />,
       image: "/lugares/global.png",
       title: "Red a la que pertenece",
-      value: "Coalición por la Memoria, la Cultura y la Paz",
+      value:
+        "Es un museo / galería que tiene anexada la Ruta por la Memoria del Museo Popular de Siloé y el archivo de la memoria del barrio.",
     },
     {
       icon: <Library {...iconStyle} />,
       image: "/lugares/handshake.png",
       title: "Colectivo / Organización gestora",
-      value: "Pastoral Social de Diócesis de Tumaco",
+      value:
+        "Es un museo/ galería que tiene anexada la Ruta por la Memoria del Museo Popular de Siloé y el archivo de la memoria del barrio.",
     },
   ];
   const renderCircle = (
@@ -125,13 +129,7 @@ export default function index() {
           }}
         />
       </div>
-      <div
-      // style={{
-      //   display: "flex",
-      //   justifyContent: "center",alignItems
-      // }}
-      >
-        {/* {data.icon} */}
+      <div>
         <img
           src={data.image}
           alt={data.title}
@@ -171,15 +169,16 @@ export default function index() {
   const ubicacionData = [
     {
       title: "Departamento",
-      value: "Nariño",
+      value: "Valle del Cauca",
     },
     {
       title: "Ciudad",
-      value: "San Andrés de Tumaco",
+      value: "Cali",
     },
     {
       title: "Dirección",
-      value: "Calle del Comercio, Sector El Bucanero",
+      value:
+        "Calle novena oeste, con diagonal 50 -18. Barrio El Cortijo, comuna 20 de Santiago de Cali.",
     },
     {
       title: "Macroregión",
@@ -239,7 +238,7 @@ export default function index() {
             // className="text-center text-[32px] md:text-5xl font-bold text-white mt-[20%] mb-auto"
             style={{ fontSize: "48px", fontWeight: "bold" }}
           >
-            Casa de la Memoria del Pacífico Nariñense
+            Museo Popular de Siloé
           </h1>
           <div
             style={{
@@ -252,14 +251,15 @@ export default function index() {
             }}
           >
             <p style={{ fontSize: "14px" }}>
-              La Casa de la Memoria del Pacífico Nariñense se encuentra ubicada
-              en la Calle del Comercio, sector El Bucanero en el distrito de
-              Tumaco, departamento de Nariño. Este municipio portuario se conoce
-              como la Perla del Pacífico, es territorio de frontera con el
-              Ecuador y posee ecosistemas marítimos, de manglar y de bosque
-              tropical. Alberga comunidades étnicas, afrocolombianas e indígenas
-              en su mayoría, que han sufrido históricamente los efectos del
-              conflicto armado interno
+              Después de dos iniciativas de memoria de televisión comunitaria y
+              radio comunitaria, se comienza el museo como una propuesta para
+              contar la historia, que con el tiempo se convertiría en el Museo
+              de Popular de Siloé, con la recolección y donación de objetos en
+              el sitio; objetos que han sido donados por los habitantes de la
+              comunidad en aporte a la labor de memoria que han cosntruído. El
+              museo reune las múltiples historias del barrio entre las que se
+              encuentran los procesos de construcción, el problema de los
+              deslizamientos, la ausencia del estado y la resistencia de Siloé.
             </p>
           </div>
           <div
@@ -355,7 +355,7 @@ export default function index() {
             // alignItems: "center",
             color: "white",
             gap: "32px",
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${imagenPrincipal})`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${historia})`,
             backgroundSize: "cover",
             position: "relative",
             height: "100vh",
@@ -374,14 +374,12 @@ export default function index() {
             }}
           >
             <p style={{ fontSize: "14px", color: "white" }}>
-              La Casa de la Memoria del Pacífico Nariñense se encuentra ubicada
-              en la Calle del Comercio, sector El Bucanero en el distrito de
-              Tumaco, departamento de Nariño. Este municipio portuario se conoce
-              como la Perla del Pacífico, es territorio de frontera con el
-              Ecuador y posee ecosistemas marítimos, de manglar y de bosque
-              tropical. Alberga comunidades étnicas, afrocolombianas e indígenas
-              en su mayoría, que han sufrido históricamente los efectos del
-              conflicto armado interno
+              El museo popular se organiza en un principio en la Fundación Nueva
+              Luz, la Fundación Nueva Luz y el Comité Cívico de Laderas con la
+              con la emisora que coincide con el Comité Cívico de Laderas con la
+              emisora, la estrella estéreo y Nueva Luz con Tele veinte. El museo
+              se fusiona y se creó el colectivo que es el colectivo que está
+              funcionando en este momento.
             </p>
           </div>
         </div>
@@ -396,27 +394,20 @@ export default function index() {
           }}
         >
           <p>
-            El lugar de memoria se fundó en el año 2017, es administrado por la
-            Diócesis de Tumaco y surge como un lugar de memoria para visibilizar
-            el legado de la Hermana Yolanda Cerón, asesinada en 2001, quien
-            trabajó por la memoria histórica y la construcción de paz en el
-            territorio El espacio tiene salas de exposiciones temporales y
-            permanentes para el desarrollo de iniciativas de memoria y
-            actividades artísticas y culturales, que no sólo conectan con
-            relatos y acciones para la construcción de paz en esta región de
-            Nariño, sino que también se relacionan con el fortalecimiento de
-            actividades y proyectos de memoria histórica. Con el tiempo, la Casa
-            se ha convertido en un referente importante para los lugares de
-            memoria de Colombia. Dentro de estas actividades y proyectos, se
-            encuentran, entre otros, la Galería de la Memoria, la exposición
-            Casa Volteada, distintas metodologías de construcción de paz,
-            talleres y trabajo voluntario con niños y jóvenes. Adicionalmente,
-            existen iniciativas de memoria con enfoque de género y algunas
-            lideresas que apoyan estos procesos han viajado fuera de Tumaco para
-            compartir estas experiencias.
+            En el 2000 nace el Museo Popular de Siloé el cual es la extensión de
+            la cotidianidad de la comunidad, de las mingas, del trabajo de
+            memoria de los abuelos, una memoria oral y de todo el trabajo de
+            alcantarillado, de acueductos y procesos de apropiación del
+            territorio a partir de la construcción del barrio desde 1920.
+            Después de dos iniciativas de memoria de televisión comunitaria y
+            radio comunitaria, se comienza el museo como una propuesta para
+            contar la historia, que con el tiempo se convertiría en el Museo de
+            Popular de Siloé, con la recolección y donación de objetos en el
+            sitio; objetos que han sido donados por los habitantes de la
+            comunidad en aporte a la labor de memoria que han cosntruído.
           </p>
           <img
-            src={foto02}
+            src={historia2}
             style={{
               width: "50%",
               objectFit: "cover",
@@ -424,34 +415,7 @@ export default function index() {
             }}
           />
         </div>
-        {/* <div
-          className="text-white flex flex-col justify-space-between gap-5"
-          style={{
-            height: "100vh",
-            backgroundColor: "#111828",
-            padding: "0 128px",
-            backgroundImage: `url(${fondoHistoria})`,
-            backgroundSize: "cover",
-            backgroundBlendMode: "soft-light",
-          }}
-        >
-          <h3 className=" text-[32px] md:text-5xl font-bold text-white mt-[20%] mb-auto gap-2">
-            Su historia
-          </h3>
-          <div className="columns-2 h-96 gap-24 overflow-auto">
-            <p className="break-words">
-              La Casa de la Memoria del Pacífico Nariñense se encuentra ubicada
-              en la Calle del Comercio, sector El Bucanero en el distrito de
-              Tumaco, departamento de Nariño. Este municipio portuario se conoce
-              como la Perla del Pacífico, es territorio de frontera con el
-              Ecuador y posee ecosistemas marítimos, de manglar y de bosque
-              tropical. Alberga comunidades étnicas, afrocolombianas e indígenas
-              en su mayoría, que han sufrido históricamente los efectos del
-              conflicto armado interno.
-            </p>
-          </div>
-        </div> */}
-        {/* IFRAME PESCADOS */}
+        {/* IFRAME  */}
 
         <div
           style={{
@@ -483,9 +447,9 @@ export default function index() {
               }}
             >
               <h1 className="text-[48px] text-white font-bold">
-                Mural de la historia de Tumaco
+                Recorrido por la Memoria de Siloé
               </h1>
-              <h3 className="text-[px] text-white ">Imagen interactiva</h3>
+              <h3 className="text-[px] text-white ">Video Scroll</h3>
 
               <button
                 style={{
@@ -502,7 +466,7 @@ export default function index() {
             </div>
           </div>
           <iframe
-            src="https://cnmh-prototipo.vercel.app/tumaco/mural_pargos"
+            src="https://cnmh-prototipo.vercel.app/siloe/A01"
             style={{ width: "100%", height: "100%", padding: 24 }}
           />
         </div>
