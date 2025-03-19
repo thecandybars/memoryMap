@@ -16,18 +16,24 @@ export function createCustomMarker(location, isCluster = false, clusterCount, is
         // Determinamos el color y el símbolo del icono basado en el tipo
         const iconColor = getIconColorByType(location.type);
         const iconSymbol = getIconSymbolByType(location.type);
-        // Estructura más elegante con transparencias y sin emoticonos
-        el.innerHTML = `
-      <div class="memory-location-marker ${isSelected ? "selected" : ""}">
-        <div class="memory-marker-outer-ring"></div>
-        <div class="memory-marker-circle" style="background-color: ${iconColor}40; border-color: ${iconColor}80;">
-          <div class="memory-marker-inner-circle" style="background-color: ${iconColor};">
-            <div class="memory-marker-icon" style="color: white;">${iconSymbol}</div>
-          </div>
-        </div>
-        ${location.code ? `<div class="memory-marker-label">${location.code}</div>` : ''}
-      </div>
-    `;
+        
+        // Ocultar SOLO el marcador del Centro de Memoria, Paz y Reconciliación
+        if (location.id === 'bogota_cnmh') {
+          // El contenedor vacío sin el marcador
+          el.innerHTML = `<div class="memory-location-marker hidden"></div>`;
+        } else {
+          // Estructura normal para todos los demás marcadores (incluyendo otros lugares de tipo "caracterizados")
+          el.innerHTML = `
+            <div class="memory-location-marker ${isSelected ? "selected" : ""}">
+              <div class="memory-marker-outer-ring"></div>
+              <div class="memory-location-marker-circle" style="background-color: ${iconColor}40; border-color: ${iconColor}80;">
+                <div class="memory-marker-inner-circle" style="background-color: ${iconColor};">
+                  <div class="memory-marker-icon" style="color: white;">${iconSymbol}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
     }
     return el;
 }
@@ -43,6 +49,7 @@ function getIconColorByType(type) {
         sanaciones: "#9C27B0", // Morado
         exilio: "#EC4899", // Rosa fuerte para exilio
     };
+    
     return colors[type] || "#FFFFFF";
 }
 /**

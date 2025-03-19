@@ -56,10 +56,10 @@ const DemoGuide: React.FC<DemoGuideProps> = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="max-w-md z-50"
+          className="max-w-xs z-50"
         >
-          <div className="bg-black/40 backdrop-blur-xl 
-            rounded-2xl border border-white/5 shadow-[0_10px_40px_rgba(0,0,0,0.3)] overflow-hidden">
+          <div className="bg-black/30 backdrop-blur-xl 
+            rounded-2xl border border-white/5 shadow-[0_10px_40px_rgba(0,0,0,0.3)] overflow-hidden max-w-sm">
             {/* Cabecera */}
             <div className="px-5 py-3 border-b border-white/5 flex justify-between items-center
                 bg-gradient-to-r from-gray-700/10 to-transparent">
@@ -79,11 +79,8 @@ const DemoGuide: React.FC<DemoGuideProps> = ({
             </div>
             
             {/* Contenido */}
-            <div className="p-5">
-              <div className="flex items-start gap-4">
-                <div className="mt-1 bg-gradient-to-br from-gray-500/5 to-transparent p-2 rounded-full">
-                  {currentInfo.icon}
-                </div>
+            <div className="p-4 px-3">
+              <div className="flex items-start gap-2">
                 <p className="text-white/80 text-sm leading-relaxed">
                   {currentInfo.description}
                 </p>

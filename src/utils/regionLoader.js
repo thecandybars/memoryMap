@@ -222,3 +222,80 @@ export function getRegionNameForGeoJSON(macroRegion) {
     };
     return regionMapping[macroRegion] || macroRegion;
 }
+
+/**
+ * Función para restablecer cualquier resaltado de regiones
+ * Útil cuando cambiamos de modo o queremos limpiar el mapa
+ */
+export function resetRegionHighlighting(mapRef) {
+    if (!mapRef.current) return;
+    const map = mapRef.current;
+    
+    if (!map.getLayer('regiones-fill')) {
+        console.log('resetRegionHighlighting: capa regiones-fill no existe, recreando capas...');
+        
+        // Si las capas no existen, intentamos cargar el GeoJSON y crear las capas
+        if (map.getSource('macroregiones')) {
+            try {
+                createRegionLayers(map);
+            } catch (error) {
+                console.error('Error al recrear capas de regiones:', error);
+                return;
+            }
+        } else {
+            // Si ni siquiera existe la fuente, intentamos cargar todo desde cero
+            loadRegionsGeoJSON({ current: map }, { current: true });
+            return;
+        }
+    }
+    
+    try {
+        // Resetear el estado global
+        currentHighlightedRegion = null;
+        
+        // Primero asegurarnos de que el color de relleno esté configurado correctamente
+        map.setPaintProperty('regiones-fill', 'fill-color', [
+            'match',
+            ['get', 'name'],
+            'pacifico', '#57CACC',
+            'amazonia', '#6BD88B',
+            'andina', '#D4A76A',
+            'caribe', '#F9B45C',
+            'orinoquia', '#D76D6D',
+            'rgba(255, 255, 255, 0.2)' // color por defecto
+        ]);
+        
+        // Quitar filtros para mostrar TODAS las regiones con sus colores
+        map.setFilter('regiones-fill', null);
+        map.setFilter('regiones-boundary', null);
+        
+        // Restablecer opacidad variable por zoom a los valores por defecto
+        map.setPaintProperty('regiones-fill', 'fill-opacity', [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            7, 0.3,    // Zoom 7 o menos: opacidad 0.3
+            10, 0.05   // Zoom 10 o más: opacidad 0.05
+        ]);
+        
+        map.setPaintProperty('regiones-boundary', 'line-opacity', [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            7, 0.7,     // Zoom 7 o menos: opacidad 0.7
+            10, 0.2     // Zoom 10 o más: opacidad 0.2
+        ]);
+        
+        map.setPaintProperty('regiones-boundary', 'line-width', [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            7, 1,      // Zoom 7 o menos: grosor 1
+            10, 0.2    // Zoom 10 o más: grosor 0.2
+        ]);
+        
+        console.log('Resaltado de regiones restablecido - TODAS las regiones son visibles ahora');
+    } catch (error) {
+        console.error('Error al restablecer regiones:', error);
+    }
+}

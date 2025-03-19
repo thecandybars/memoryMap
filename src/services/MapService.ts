@@ -4,6 +4,7 @@ import mapboxgl from "mapbox-gl";
 import { colombiaRegions, memoryTypes, type MacroRegion } from "../data/regions";
 import { memoryLocations, createCustomMarker } from "../utils/mapHelpers";
 import { createRandomPoints } from "../utils/helpers";
+import { loadRegionsGeoJSON, resetRegionHighlighting } from "../utils/regionLoader";
 import { AppState, MemoryLocation } from "../types";
 
 // Constantes de estilo para el mapa
@@ -1012,23 +1013,15 @@ export function startGuidedTour(
   
   // Coordenadas y detalles de lugares de memoria para mostrar durante el tour
   const defaultTourLocations = [
-    {
-      id: "bogota_cnmh",
-      longitude: -74.071,
-      latitude: 4.624,
-      title: "Centro de Memoria, Paz y Reconciliación",
-      description: "Este centro en el corazón de Colombia simboliza la resistencia y la memoria colectiva de las víctimas del conflicto.",
-      type: "caracterizados",
-      code: "LM001"
-    },
+    // Omitido el marcador de tipo "caracterizados" del "Centro de Memoria, Paz y Reconciliación"
+    // y reemplazado con un nuevo lugar*/
     {
       id: "medellin_casa",
       longitude: -75.571,
       latitude: 6.249,
       title: "Museo Casa de la Memoria",
       description: "Este espacio dedicado a la memoria de las víctimas permite que las voces silenciadas por la violencia sean escuchadas.",
-      type: "identificados",
-      code: "LM002"
+      type: "identificados"
     },
     {
       id: "cali_monumento",
@@ -1036,8 +1029,7 @@ export function startGuidedTour(
       latitude: 3.435,
       title: "Monumento a las Víctimas del Conflicto",
       description: "Este lugar simboliza la resistencia de las comunidades afectadas por la violencia en el suroccidente del país.",
-      type: "solicitud",
-      code: "LM003"
+      type: "solicitud"
     },
     {
       id: "cartagena_memorial",
@@ -1045,8 +1037,7 @@ export function startGuidedTour(
       latitude: 10.39,
       title: "Memorial por la Verdad",
       description: "Un espacio de reflexión y conmemoración dedicado a honrar la memoria de las víctimas del conflicto en la región Caribe.",
-      type: "sanaciones",
-      code: "LM004"
+      type: "sanaciones"
     }
   ];
   
@@ -1086,20 +1077,25 @@ export function startGuidedTour(
     }
     
     markersToShow.forEach(location => {
+      // Omitir específicamente el marcador del Centro de Memoria, Paz y Reconciliación
+      if (location.id === 'bogota_cnmh') {
+        console.log("Ocultando marcador del Centro de Memoria, Paz y Reconciliación");
+        return;
+      }
+      
       const el = document.createElement("div");
       el.className = "memory-location-marker";
       
       const markerColor = getMarkerColor(location.type);
       el.innerHTML = `
         <div class="memory-marker-outer-ring"></div>
-        <div class="memory-marker-circle" style="background-color: ${markerColor}40; border-color: ${markerColor}80;">
+        <div class="memory-location-marker-circle" style="background-color: ${markerColor}40; border-color: ${markerColor}80;">
           <div class="memory-marker-inner-circle" style="background-color: ${markerColor};">
             <div class="memory-marker-icon" style="color: white;">
               ${getMarkerIcon(location.type)}
             </div>
           </div>
         </div>
-        ${location.code ? `<div class="memory-marker-label">${location.code}</div>` : ''}
       `;
       
       const marker = new mapboxgl.Marker({
@@ -1238,8 +1234,8 @@ export function startGuidedTour(
     // Tour estándar con introducción y contenido educativo
     tourSequence = [
       {
-        title: "Mapa de la Memoria Histórica",
-        message: "Bienvenido al recorrido por los Lugares de Memoria de Colombia...",
+        title: "Museo Virtual",
+        message: "El Museo Virtual del Centro Nacional de Memoria Histórica (CNMH) es una ventana al territorio para navegar por la memoria. Se trata de una experiencia virtual que descentraliza y protege contenidos creados con las comunidades.",
         center: [-73.5, 4.8],
         zoom: 6.2,
         pitch: 45,
@@ -1247,11 +1243,11 @@ export function startGuidedTour(
         duration: 7000
       },
       {
-        title: "Navegación por Regiones",
-        message: "El mapa te permite explorar las cinco macroregiones de Colombia...",
-        center: [-74.2, 4.55],
-        zoom: 10,
-        pitch: 50,
+        title: "Lugar de Memoria",
+        message: "Los lugares de la memoria son espacios físicos y simbólicos que conmemoran y reflexionan sobre acontecimientos significativos para las comunidades durante el conflicto armado.",
+        center: [-78.81, 1.82], 
+        zoom: 15,
+        pitch: 60,
         bearing: 30,
         duration: 7000
       },
@@ -1266,11 +1262,11 @@ export function startGuidedTour(
         location: `${tourLocations[0].code} • Región Andina • ${getTypeName(tourLocations[0].type)}`
       },
       {
-        title: "Información Contextual",
-        message: "Este mapa integra capas de información ambiental...",
-        center: [tourLocations[0].longitude - 0.002, tourLocations[0].latitude - 0.001],
-        zoom: 15.5,
-        pitch: 70,
+        title: "Capas ambientales",
+        message: "Son herramientas geográficas a manera de mapas superpuestos que permiten al usuario entender las complejidades ambientales del territorio en el que se ubica el lugar de la memoria.",
+        center: [-74.2, 4.6],
+        zoom: 8,
+        pitch: 65,
         bearing: 150,
         duration: 7000
       },
@@ -1405,6 +1401,17 @@ export function startGuidedTour(
             // Eliminar cualquier popup o mensaje que esté visible
             const tourMessages = document.querySelectorAll('.tour-message-wrapper');
             tourMessages.forEach(el => el.remove());
+            
+            // Asegurar que todas las regiones están visibles
+            try {
+              // Usar loadRegionsGeoJSON para cargar fuentes si no existen
+              loadRegionsGeoJSON(mapRef, mapLoadedRef);
+              // Restablecer regiones a su estado normal (todas visibles)
+              resetRegionHighlighting(mapRef);
+              console.log("Todas las macroregiones restablecidas y visibles");
+            } catch (error) {
+              console.error("Error al restablecer macroregiones:", error);
+            }
             
             // Cambiar el estado para volver al modo principal de la aplicación
             setAppState((prev: any) => ({ ...prev, stage: 'app' }));
@@ -2238,7 +2245,7 @@ function getTourMessageForLocation(
 ): string {
   switch (index) {
     case 0:
-      return `Te damos la bienvenida al recorrido por los Lugares de Memoria de Colombia. Comenzamos en ${location.title}, un ${memoryTypes[location.type].name.toLowerCase()} en ${getDepartmentName(location.region, location.department)}. Estos lugares son fundamentales para preservar la memoria histórica del país.`;
+      return `Museo Virtual\n\nEl Museo Virtual del Centro Nacional de Memoria Histórica (CNMH) es una ventana al territorio para navegar por la memoria. Se trata de una experiencia virtual que descentraliza y protege contenidos creados con las comunidades.`;
     
     case totalLocations - 1:
       return `Finalizamos nuestro recorrido en ${location.title}. Los lugares de memoria como este cumplen un papel fundamental en la construcción de paz y reconciliación. Te invitamos a explorar los más de 140 sitios documentados por el Centro Nacional de Memoria Histórica.`;

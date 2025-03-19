@@ -2,6 +2,7 @@
 import mapboxgl from "mapbox-gl";
 import { colombiaRegions, memoryTypes } from "../data/regions";
 import { memoryLocations, createCustomMarker } from "../utils/mapHelpers";
+import { loadRegionsGeoJSON, resetRegionHighlighting } from "../utils/regionLoader";
 // Constantes de estilo para el mapa
 export const SATELLITE_STYLE = "mapbox://styles/mapbox/satellite-v9";
 export const DARK_STYLE = "mapbox://styles/mapbox/dark-v10";
@@ -778,27 +779,40 @@ onDemoComplete // Función para saltar el demo
     const map = mapRef.current;
     setDroneActive(false);
     setAppState((prev) => ({ ...prev, stage: 'tour' }));
+    
+    // Cargar y mostrar todas las macroregiones al inicio del tour
+    console.log("Cargando y mostrando todas las macroregiones para el tour...");
+    try {
+        loadRegionsGeoJSON(mapRef, mapLoadedRef);
+        // Esperar un momento para asegurar que las regiones estén cargadas
+        setTimeout(() => {
+            if (mapRef.current && mapRef.current.getLayer('regiones-fill')) {
+                // Asegurar que todas las regiones estén visibles (sin filtro)
+                mapRef.current.setFilter('regiones-fill', null);
+                mapRef.current.setFilter('regiones-boundary', null);
+                
+                // Aumentar la opacidad para que sean más visibles
+                mapRef.current.setPaintProperty('regiones-fill', 'fill-opacity', 0.4);
+                mapRef.current.setPaintProperty('regiones-boundary', 'line-opacity', 0.8);
+            }
+        }, 500);
+    } catch (error) {
+        console.error("Error al cargar macroregiones:", error);
+    }
+    
     // Crear marcadores temporales para el tour
     const tourMarkers = [];
     // Coordenadas y detalles de lugares de memoria para mostrar durante el tour
     const defaultTourLocations = [
-        {
-            id: "bogota_cnmh",
-            longitude: -74.071,
-            latitude: 4.624,
-            title: "Centro de Memoria, Paz y Reconciliación",
-            description: "Este centro en el corazón de Colombia simboliza la resistencia y la memoria colectiva de las víctimas del conflicto.",
-            type: "caracterizados",
-            code: "LM001"
-        },
+        // Omitido el marcador de tipo "caracterizados" del "Centro de Memoria, Paz y Reconciliación"
+        // y reemplazado con un nuevo lugar*/
         {
             id: "medellin_casa",
             longitude: -75.571,
             latitude: 6.249,
             title: "Museo Casa de la Memoria",
             description: "Este espacio dedicado a la memoria de las víctimas permite que las voces silenciadas por la violencia sean escuchadas.",
-            type: "identificados",
-            code: "LM002"
+            type: "identificados"
         },
         {
             id: "cali_monumento",
@@ -806,8 +820,7 @@ onDemoComplete // Función para saltar el demo
             latitude: 3.435,
             title: "Monumento a las Víctimas del Conflicto",
             description: "Este lugar simboliza la resistencia de las comunidades afectadas por la violencia en el suroccidente del país.",
-            type: "solicitud",
-            code: "LM003"
+            type: "solicitud"
         },
         {
             id: "cartagena_memorial",
@@ -815,8 +828,7 @@ onDemoComplete // Función para saltar el demo
             latitude: 10.39,
             title: "Memorial por la Verdad",
             description: "Un espacio de reflexión y conmemoración dedicado a honrar la memoria de las víctimas del conflicto en la región Caribe.",
-            type: "sanaciones",
-            code: "LM004"
+            type: "sanaciones"
         }
     ];
     // Si hay ubicaciones específicas para un recorrido temático, usarlas en lugar de la ruta predeterminada
@@ -855,19 +867,24 @@ onDemoComplete // Función para saltar el demo
             }
         }
         markersToShow.forEach(location => {
+            // Omitir específicamente el marcador del Centro de Memoria, Paz y Reconciliación
+            if (location.id === 'bogota_cnmh') {
+                console.log("Ocultando marcador del Centro de Memoria, Paz y Reconciliación");
+                return;
+            }
+            
             const el = document.createElement("div");
             el.className = "memory-location-marker";
             const markerColor = getMarkerColor(location.type);
             el.innerHTML = `
         <div class="memory-marker-outer-ring"></div>
-        <div class="memory-marker-circle" style="background-color: ${markerColor}40; border-color: ${markerColor}80;">
+        <div class="memory-location-marker-circle" style="background-color: ${markerColor}40; border-color: ${markerColor}80;">
           <div class="memory-marker-inner-circle" style="background-color: ${markerColor};">
             <div class="memory-marker-icon" style="color: white;">
               ${getMarkerIcon(location.type)}
             </div>
           </div>
         </div>
-        ${location.code ? `<div class="memory-marker-label">${location.code}</div>` : ''}
       `;
             const marker = new mapboxgl.Marker({
                 element: el,
@@ -984,8 +1001,8 @@ onDemoComplete // Función para saltar el demo
         // Tour estándar con introducción y contenido educativo
         tourSequence = [
             {
-                title: "Mapa de la Memoria Histórica",
-                message: "Bienvenido al recorrido por los Lugares de Memoria de Colombia...",
+                title: "Museo Virtual",
+                message: "El Museo Virtual del Centro Nacional de Memoria Histórica (CNMH) es una ventana al territorio para navegar por la memoria. Se trata de una experiencia virtual que descentraliza y protege contenidos creados con las comunidades.",
                 center: [-73.5, 4.8],
                 zoom: 6.2,
                 pitch: 45,
@@ -999,6 +1016,18 @@ onDemoComplete // Función para saltar el demo
                     // Eliminar cualquier popup o mensaje que esté visible
                     const tourMessages = document.querySelectorAll('.tour-message-wrapper');
                     tourMessages.forEach(el => el.remove());
+                    
+                    // Asegurar que todas las regiones están visibles
+                    try {
+                        // Usar loadRegionsGeoJSON para cargar fuentes si no existen
+                        loadRegionsGeoJSON(mapRef, mapLoadedRef);
+                        // Restablecer regiones a su estado normal (todas visibles)
+                        resetRegionHighlighting(mapRef);
+                        console.log("Todas las macroregiones restablecidas y visibles");
+                    } catch (error) {
+                        console.error("Error al restablecer macroregiones:", error);
+                    }
+                    
                     // Cambiar el estado para volver al modo principal de la aplicación
                     setAppState((prev) => ({ ...prev, stage: 'app' }));
                     // Volver a una vista general del mapa
@@ -1015,32 +1044,88 @@ onDemoComplete // Función para saltar el demo
                 }
             },
             {
-                title: "Navegación por Regiones",
-                message: "El mapa te permite explorar las cinco macroregiones de Colombia...",
-                center: [-74.2, 4.55],
-                zoom: 10,
-                pitch: 50,
-                bearing: 30,
-                duration: 7000
-            },
-            {
-                title: tourLocations[0].title,
-                message: tourLocations[0].description + " Su arquitectura y espacios invitan...",
-                center: [tourLocations[0].longitude, tourLocations[0].latitude],
-                zoom: 16.2,
-                pitch: 67,
-                bearing: 210,
-                duration: 7000,
-                location: `${tourLocations[0].code} • Región Andina • ${getTypeName(tourLocations[0].type)}`
-            },
-            {
-                title: "Información Contextual",
-                message: "Este mapa integra capas de información ambiental...",
-                center: [tourLocations[0].longitude - 0.002, tourLocations[0].latitude - 0.001],
+                title: "Lugar de Memoria",
+                message: "Los lugares de la memoria son espacios físicos y simbólicos que conmemoran y reflexionan sobre acontecimientos significativos para las comunidades durante el conflicto armado.",
+                center: [-78.7639, 1.8127], 
                 zoom: 15.5,
-                pitch: 70,
+                pitch: 65,
+                bearing: 15,
+                duration: 7000,
+                onReach: () => {
+                    console.log("Llegando a Casa de la Memoria de Tumaco...");
+                    // Crear un marcador visible para la Casa de la Memoria de Tumaco
+                    const tumacoMarker = new mapboxgl.Marker({
+                        element: createCustomMarker({
+                            id: "tumaco_memoria",
+                            latitude: 1.8127,
+                            longitude: -78.7639,
+                            title: "Casa de la Memoria de Tumaco",
+                            type: "caracterizados",
+                            region: "pacifico",
+                            department: "narino",
+                            code: "LM027"
+                        }, false, null, true),
+                        anchor: 'bottom'
+                    })
+                    .setLngLat([-78.7639, 1.8127])
+                    .addTo(map);
+                    
+                    // Guardar el marcador para limpiarlo después
+                    tourMarkers.push(tumacoMarker);
+                }
+            },
+            {
+                title: "Casa Museo Jorge Eliécer Gaitán",
+                message: "Primer Lugar de Memoria de Colombia, donde se preserva el legado del líder político Jorge Eliécer Gaitán, cuyo asesinato en 1948 marcó el inicio de La Violencia en el país.",
+                center: [-74.0697, 4.6303],
+                zoom: 15.5,
+                pitch: 60,
+                bearing: 15,
+                duration: 7000,
+                location: "Región Andina • Lugar Caracterizado",
+                onReach: () => {
+                    console.log("Llegando a Casa Museo Gaitán...");
+                    // Crear un marcador visible para la Casa Museo Gaitán
+                    const gaitanMarker = new mapboxgl.Marker({
+                        element: createCustomMarker({
+                            id: "gaitan_museo",
+                            latitude: 4.6303,
+                            longitude: -74.0697,
+                            title: "Casa Museo Jorge Eliécer Gaitán",
+                            type: "caracterizados",
+                            region: "andina",
+                            department: "cundinamarca",
+                            code: "LM010"
+                        }, false, null, true),
+                        anchor: 'bottom'
+                    })
+                    .setLngLat([-74.0697, 4.6303])
+                    .addTo(map);
+                    
+                    // Guardar el marcador para limpiarlo después
+                    tourMarkers.push(gaitanMarker);
+                }
+            },
+            {
+                title: "Capas ambientales",
+                message: "Son herramientas geográficas a manera de mapas superpuestos que permiten al usuario entender las complejidades ambientales del territorio en el que se ubica el lugar de la memoria.",
+                center: [-74.2, 4.6],
+                zoom: 10.5,
+                pitch: 65,
                 bearing: 150,
-                duration: 7000
+                duration: 7000,
+                onReach: () => {
+                    console.log("Activando capas ambientales...");
+                    // Simulamos clic en el botón de capas
+                    const layersButton = document.querySelector('button svg[stroke="currentColor"][width="16"][height="16"]')?.closest('button');
+                    if (layersButton) {
+                        layersButton.click();
+                        setTimeout(() => {
+                            // Activar solo la capa de deforestación
+                            updateLayersVisibility(mapRef, mapLoadedRef, ["deforestation"]);
+                        }, 500);
+                    }
+                }
             },
             {
                 title: "Lugares que Conectan Territorios",
@@ -1049,7 +1134,12 @@ onDemoComplete // Función para saltar el demo
                 zoom: 9,
                 pitch: 60,
                 bearing: 30,
-                duration: 8000
+                duration: 8000,
+                onReach: () => {
+                    // Desactivar las capas ambientales cuando lleguemos a este punto
+                    console.log("Desactivando capas ambientales...");
+                    disableEnvironmentalLayers(mapRef, mapLoadedRef);
+                }
             },
             {
                 title: tourLocations[1].title,
@@ -1068,7 +1158,11 @@ onDemoComplete // Función para saltar el demo
                 zoom: 15.5,
                 pitch: 65,
                 bearing: 310,
-                duration: 7000
+                duration: 7000,
+                onReach: () => {
+                    // Desactivar las capas ambientales al llegar a este punto
+                    disableEnvironmentalLayers(mapRef, mapLoadedRef);
+                }
             },
             {
                 title: "Diversidad de Narrativas",
@@ -1130,6 +1224,11 @@ onDemoComplete // Función para saltar el demo
                     });
                     map.once('moveend', () => {
                         console.log("Vuelo completado a", step.center);
+                        // Ejecutar código onReach si existe
+                        if (step.onReach && typeof step.onReach === 'function') {
+                            console.log("Ejecutando onReach para paso:", step.title);
+                            step.onReach();
+                        }
                         setTimeout(resolve, 800);
                     });
                 });
@@ -1176,6 +1275,18 @@ onDemoComplete // Función para saltar el demo
             // Tour finalizado
             hideAreaOfInterest(mapRef, mapLoadedRef);
             tourMarkers.forEach(marker => marker.remove());
+            
+            // Asegurar que todas las regiones están visibles
+            try {
+                // Usar loadRegionsGeoJSON para cargar fuentes si no existen
+                loadRegionsGeoJSON(mapRef, mapLoadedRef);
+                // Restablecer regiones a su estado normal (todas visibles)
+                resetRegionHighlighting(mapRef);
+                console.log("Todas las macroregiones restablecidas y visibles");
+            } catch (error) {
+                console.error("Error al restablecer macroregiones:", error);
+            }
+            
             map.flyTo({
                 center: [-73.5, 4.8],
                 zoom: 6,
@@ -1189,11 +1300,31 @@ onDemoComplete // Función para saltar el demo
         })().catch(error => {
             console.error("Error en tour guiado:", error);
             tourMarkers.forEach(marker => marker.remove());
+            
+            // Asegurar que todas las regiones están visibles incluso en caso de error
+            try {
+                loadRegionsGeoJSON(mapRef, mapLoadedRef);
+                resetRegionHighlighting(mapRef);
+            } catch (err) {
+                console.error("Error al restablecer regiones:", err);
+            }
+            
             setAppState((prev) => ({ ...prev, stage: 'app' }));
         });
     }
     catch (error) {
         console.error("Error en tour guiado:", error);
+        
+        // Asegurar que todas las regiones están visibles incluso en caso de error
+        try {
+            if (mapRef?.current) {
+                loadRegionsGeoJSON(mapRef, mapLoadedRef);
+                resetRegionHighlighting(mapRef);
+            }
+        } catch (err) {
+            console.error("Error al restablecer regiones:", err);
+        }
+        
         setAppState((prev) => ({ ...prev, stage: 'app' }));
     }
 }
@@ -1373,6 +1504,15 @@ export function setupClusteredMarkers(mapRef, mapLoadedRef, memoryLocations, onM
         onMarkerClick(location);
     });
 }
+
+/**
+ * Función para desactivar las capas ambientales
+ */
+export function disableEnvironmentalLayers(mapRef, mapLoadedRef) {
+    if (!mapRef.current || !mapLoadedRef.current) return;
+    console.log("Desactivando capas ambientales...");
+    updateLayersVisibility(mapRef, mapLoadedRef, []);
+}
 /**
  * Carga las imágenes personalizadas para los marcadores si no existen ya
  */
@@ -1493,8 +1633,9 @@ function generateImprovedHeatmapData() {
         }
         return points;
     }
-    // Deforestación
+    // Deforestación - Añadido un cluster importante para la zona de Bogotá que mostramos
     const deforestationClusters = [
+        createConcentratedPoints(-74.2, 4.6, 200, 1.5, 0.8, 1.0), // Zona de Bogotá (para capas ambientales)
         createConcentratedPoints(-72.0, 0.0, 100, 2.0, 0.7, 1.0),
         createConcentratedPoints(-77.0, 6.0, 70, 1.5, 0.7, 1.0),
         createConcentratedPoints(-74.0, 7.5, 50, 1.2, 0.6, 0.9),
@@ -1855,7 +1996,7 @@ export function updateVisibleMarkersWithClustering(mapRef, mapLoadedRef, appStat
 function getTourMessageForLocation(location, index, totalLocations) {
     switch (index) {
         case 0:
-            return `Te damos la bienvenida al recorrido por los Lugares de Memoria de Colombia. Comenzamos en ${location.title}, un ${memoryTypes[location.type].name.toLowerCase()} en ${getDepartmentName(location.region, location.department)}. Estos lugares son fundamentales para preservar la memoria histórica del país.`;
+            return `Museo Virtual\n\nEl Museo Virtual del Centro Nacional de Memoria Histórica (CNMH) es una ventana al territorio para navegar por la memoria. Se trata de una experiencia virtual que descentraliza y protege contenidos creados con las comunidades.`;
         case totalLocations - 1:
             return `Finalizamos nuestro recorrido en ${location.title}. Los lugares de memoria como este cumplen un papel fundamental en la construcción de paz y reconciliación. Te invitamos a explorar los más de 140 sitios documentados por el Centro Nacional de Memoria Histórica.`;
         default:

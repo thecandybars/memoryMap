@@ -12,7 +12,17 @@ position: absolute;
 
 /* Estilo para los marcadores de lugares de memoria */
 .memory-location-marker {
-cursor: pointer;
+  cursor: pointer;
+}
+
+/* Ocultar completamente los marcadores de tipo caracterizados */
+.memory-location-marker.hidden {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .memory-marker {
@@ -395,7 +405,7 @@ position: relative;
 transform: scale(1.2);
 }
 
-.memory-marker-circle {
+.memory-location-marker-circle {
 position: absolute;
   top: 0;
   left: 0;
@@ -412,7 +422,7 @@ position: absolute;
   transition: all 0.3s ease;
 }
 
-.memory-location-marker.selected .memory-marker-circle {
+.memory-location-marker.selected .memory-location-marker-circle {
 transform: scale(1.2);
   border-color: #FFCC00;
   box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
@@ -650,7 +660,7 @@ font-size: 14px;
 position: relative;
 }
 
-.memory-location-marker:hover .memory-marker-circle {
+.memory-location-marker:hover .memory-location-marker-circle {
 transform: scale(1.1);
   border-color: white;
 }

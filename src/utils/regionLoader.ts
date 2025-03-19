@@ -160,7 +160,7 @@ export function highlightRegion(
     map.setFilter('regiones-fill', ['==', ['get', 'name'], regionName.toLowerCase()]);
     map.setFilter('regiones-boundary', ['==', ['get', 'name'], regionName.toLowerCase()]);
     
-    // Configurar la opacidad variable en función del zoom
+    // Configurar la opacidad variable en función del zoom - SIEMPRE se aplica en todos los modos
     map.setPaintProperty('regiones-fill', 'fill-opacity', [
       'interpolate',
       ['linear'],
@@ -195,7 +195,7 @@ export function highlightRegion(
     map.setFilter('regiones-fill', null);
     map.setFilter('regiones-boundary', null);
     
-    // Restablecer opacidad variable por zoom
+    // Restablecer opacidad variable por zoom - SIEMPRE se aplica en todos los modos 
     map.setPaintProperty('regiones-fill', 'fill-opacity', [
       'interpolate',
       ['linear'],
@@ -299,7 +299,7 @@ export function resetRegionHighlighting(
     map.setFilter('regiones-fill', null);
     map.setFilter('regiones-boundary', null);
     
-    // Restablecer opacidad variable por zoom a los valores por defecto
+    // Restablecer opacidad variable por zoom a los valores por defecto - SIEMPRE se aplica en todos los modos
     map.setPaintProperty('regiones-fill', 'fill-opacity', [
       'interpolate',
       ['linear'],

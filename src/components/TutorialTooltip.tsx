@@ -29,8 +29,8 @@ const TutorialTooltip: React.FC<TutorialTooltipProps> = ({
 
   const tutorialSteps: TutorialStep[] = [
     {
-      title: "Bienvenido al Mapa de Memoria",
-      content: "Este mapa interactivo te permite explorar los sitios de memoria histórica de Colombia. Aprende a navegar con este breve tutorial.",
+      title: "Museo Virtual",
+      content: "El Museo Virtual del Centro Nacional de Memoria Histórica (CNMH) es una ventana al territorio para navegar por la memoria. Se trata de una experiencia virtual que descentraliza y protege contenidos creados con las comunidades.",
       icon: <Info className="w-6 h-6 text-gray-300" />
     },
     {

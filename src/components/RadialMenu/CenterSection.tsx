@@ -7,12 +7,14 @@ interface CenterSectionProps {
   highlightSection?: string;
   onClick: () => void;
   isDemoMode?: boolean;
+  onResetView?: () => void;
 }
 
 const CenterSection: React.FC<CenterSectionProps> = ({
   highlightSection,
   onClick,
-  isDemoMode = false
+  isDemoMode = false,
+  onResetView
 }) => {
   // Detectar si estamos en móvil
   const isMobile = window.innerWidth <= 768;
@@ -33,6 +35,24 @@ const CenterSection: React.FC<CenterSectionProps> = ({
     // En modo demo, siempre iniciar el tour
     if (isDemoMode) {
       console.log("Iniciando tour (modo demo)");
+      
+      try {
+        // Intentamos cargar y mostrar las macroregiones antes de iniciar el tour
+        const mapVisualizer = document.getElementById('map-visualizer');
+        if (mapVisualizer) {
+          // Disparar un evento personalizado que el componente padre puede escuchar
+          const loadRegionsEvent = new CustomEvent('loadAllRegions', { 
+            bubbles: true,
+            detail: { source: 'centerButton' } 
+          });
+          mapVisualizer.dispatchEvent(loadRegionsEvent);
+          console.log("Evento loadAllRegions disparado");
+        }
+      } catch (error) {
+        console.error("Error al intentar cargar macroregiones:", error);
+      }
+      
+      // Iniciar el tour
       onClick();
       return;
     }
@@ -79,11 +99,8 @@ const CenterSection: React.FC<CenterSectionProps> = ({
         (mainCircle as SVGCircleElement).setAttribute('r', String(rCenter + 10));
       }
       
-      // Si hay función para resetear vista, la invocamos
-      if (onResetView) {
-        console.log("Invocando resetView()...");
-        onResetView();
-      }
+      // NO llamamos a onResetView al contraer el menú
+      // Simplemente contraemos visualmente el menú sin cambiar la cámara
     }
     // 2. EXPANDIR: Si el menú está contraído, lo expandimos
     else {

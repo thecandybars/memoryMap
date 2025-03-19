@@ -141,7 +141,13 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
 
   const handleMemorySelect = (type: 'memory', id: string) => {
     setSelectedMemoryType(id);
+    
+    // Notificar al componente padre (esto activará la transparencia por zoom)
     onSelect(type, id);
+    
+    // Disparar evento personalizado para macroregiones con transparencia
+    const event = new CustomEvent('memoryTypeSelected', { detail: { id } });
+    document.dispatchEvent(event);
   };
 
   // Clic en el centro
@@ -394,6 +400,7 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
             highlightSection={highlightSection}
             onClick={handleCenterClick}
             isDemoMode={isDemoMode}
+            onResetView={onResetView}
           />
         </svg>
 
