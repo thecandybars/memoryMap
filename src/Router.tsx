@@ -1,7 +1,8 @@
 // src/Router.tsx
+
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import App from "./App";
+import App from "./App.js";
 import TumacoPage from "./components/Lugares/Tumaco/index.jsx";
 import SiloePage from "./components/Lugares/Siloe/index.jsx";
 import BojayaPage from "./components/Lugares/Bojaya/index.jsx";
